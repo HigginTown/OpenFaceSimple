@@ -185,7 +185,7 @@ class OpenFaceSimpleEnv(gym.Env):
             # we return a negative reward and the agent will need to reset the game
             else:
                 self.done = True
-                return self.obs, -1, self.done, {}
+                return self.obs, -10, self.done, {}
 
         # this is the case for the front row, similar to the above
         else:
@@ -203,7 +203,7 @@ class OpenFaceSimpleEnv(gym.Env):
             else:
                 # end the game and return a negative reward if we try to play a card in a full row
                 self.done = True
-                return self.obs, -1, self.done, {}
+                return self.obs, -10, self.done, {}
 
         # if we have made it to this point, it means we have placed a valid card for the step
         # then we can increment the step and get a new card
