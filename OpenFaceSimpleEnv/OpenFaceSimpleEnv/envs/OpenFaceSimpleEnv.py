@@ -147,7 +147,7 @@ class OpenFaceSimpleEnv(gym.Env):
             # if 0 not in front and 0 not in back
             front_eval = self.evaluator._five(front)
             back_eval = self.evaluator._five(back)
-            return 1 if front_eval > back_eval else -1
+            return 2 if front_eval > back_eval else -1
 
         # return 0 as the agent is playing
         else:
