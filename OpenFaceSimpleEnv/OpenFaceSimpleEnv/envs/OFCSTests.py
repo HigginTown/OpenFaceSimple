@@ -1,45 +1,46 @@
 import unittest
-
 import treys
+import OpenFaceSimpleEnv
+from OpenFaceSimpleEnv import convert_bitlist_to_int
 
-from OpenFaceSimpleEnv import OpenFaceSimpleEnv, convert_bitlist_to_int
+print("testing")
 
 
 class MyTestCase(unittest.TestCase):
     def test_sample_action_space(self):
-        env = OpenFaceSimpleEnv()
+        env = OpenFaceSimpleEnv.OpenFaceSimpleEnv()
         s = env.action_space.sample()
         assert s in [0, 1]
 
     def test_observation_space(self):
-        env = OpenFaceSimpleEnv()
+        env = OpenFaceSimpleEnv.OpenFaceSimpleEnv()
         o = env.observation_space.sample()
 
     def test_step(self):
-        env = OpenFaceSimpleEnv()
+        env = OpenFaceSimpleEnv.OpenFaceSimpleEnv()
         action = env.action_space.sample()
         obs, r, done, info = env.step(action)
 
     def test_reset(self):
-        env = OpenFaceSimpleEnv()
+        env = OpenFaceSimpleEnv.OpenFaceSimpleEnv()
         action = env.action_space.sample()
         obs, r, done, info = env.step(action)
         obs = env.reset()
         assert len(obs) == 356
 
     def test_ten_steps(selfs):
-        env = OpenFaceSimpleEnv()
+        env = OpenFaceSimpleEnv.OpenFaceSimpleEnv()
         for t in range(10):
             action = t % 2
             obs, r, done, info = env.step(action)
         assert done == True or r < 0, f"ERROR: done {done}, r {r}, steps {t}"
 
     def test_render(self):
-        env = OpenFaceSimpleEnv()
+        env = OpenFaceSimpleEnv.OpenFaceSimpleEnv()
         env.render()
         done = env.done
         t = 0
-        while (t < 20 and env.done == False):
+        while env.done is False:
             t += 1
             action = t % 2
             obs, r, done, info = env.step(action)
@@ -48,9 +49,9 @@ class MyTestCase(unittest.TestCase):
         print(f"Rewards: {r}")
 
     def test_experience_random(self, steps=15):
-        env = OpenFaceSimpleEnv()
+        env = OpenFaceSimpleEnv.OpenFaceSimpleEnv()
         o = env.observation_space.sample()
-        print("Starting board")
+        print("Starting random board")
         env.obs = o
         env.render()
         done = False
@@ -66,15 +67,32 @@ class MyTestCase(unittest.TestCase):
             env.render()
 
     def test_step(self):
-        env = OpenFaceSimpleEnv()
+        env = OpenFaceSimpleEnv.OpenFaceSimpleEnv()
         for t in range(10):
             action = t % 2
             obs, r, done, info = env.step(action)
-            print('conv', convert_bitlist_to_int(obs[-4:]))
-            print(r)
-            # assert convert_bitlist_to_int(obs[-4:]) == r
             rew = env._get_reward(obs)
-            print(rew)
+
+    def test_repeated_action(self):
+        # what happens when we step through the environment with the same action?
+        env = OpenFaceSimpleEnv.OpenFaceSimpleEnv()
+        print("\n Repeating \n")
+        t = 0
+        actions_dict = {0: 0, 1: 0}
+        while not env.done:
+            print(f"Steps: {t}")
+            env.render()
+            action = env.action_space.sample()
+            actions_dict[action] = actions_dict[action] + 1
+            print(actions_dict)
+            print(f"attempting: {action}")
+            obs, r, done, _ = env.step(action)
+            print(f"obs step: {obs[-4:]}")
+            print(f"Reward: {r}")
+            print(f"Done yet? {env.done}")
+            print("\n")
+            t += 1
+        print(f"final iterations: {t}")
 
 
 if __name__ == '__main__':

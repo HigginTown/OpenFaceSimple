@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name='OpenFaceSimple',
-      version='1.0',
+setup(name='OpenFaceSimpleEnv',
+      version='1.1',
       install_requires=['gym', 'treys', 'numpy']
       )

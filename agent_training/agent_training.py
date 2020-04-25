@@ -1,10 +1,9 @@
 import time
 import warnings
-
 from stable_baselines import A2C
 from stable_baselines.common.policies import MlpPolicy
-
-# import stable_baselines
+import gym
+import OpenFaceSimpleEnv
 
 # filter warnings
 warnings.filterwarnings('ignore')
@@ -12,12 +11,11 @@ warnings.filterwarnings('ignore')
 # agent and training meta
 POLICY = MlpPolicy
 POLICY_NAME = 'MlpPolicy'
-from stable_baselines.common import make_vec_env
 
-ENVIRONMENT = "OpenFaceSimpleEnv-v0"
-TIMESTEPS = 100
-NETWORK_ARCH = [356, 356, 356]
-LOG_INTERVAL = 1
+ENVIRONMENT = "OpenFaceSimpleEnv-v1"
+TIMESTEPS = 50
+NETWORK_ARCH = [356, 356, 800, 800, 400]
+LOG_INTERVAL = 10
 
 START_TIME = time.asctime().replace(' ', '-').replace(':', '-')
 TENSORBOARD_DIR = f'logs/tb/'
@@ -29,7 +27,7 @@ def train(policy=POLICY, environment=ENVIRONMENT, timesteps=TIMESTEPS, log_inter
     print(f"[INFO] NETWORK ARCH {NETWORK_ARCH}")
 
     # configure the environment
-    env = make_vec_env(ENVIRONMENT, n_envs=1)
+    env = gym.make("OpenFaceSimpleEnv-v1")
     # Custom MLP policy of two layers of size 32 each with tanh activation function
     policy_kwargs = dict(net_arch=NETWORK_ARCH)
     model = A2C(policy, env, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log=TENSORBOARD_DIR, n_steps=10)
@@ -42,7 +40,7 @@ def train(policy=POLICY, environment=ENVIRONMENT, timesteps=TIMESTEPS, log_inter
     model.save(save_path=MODEL_DIR, cloudpickle=False)
     print(f"[INFO] MODEL SAVED TO {MODEL_DIR}")
 
-    return model
+    return 0
 
 
-trained_model = train()
+failed = train()

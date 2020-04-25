@@ -1,0 +1,7 @@
+README.md
+setup.py
+OpenFaceSimpleEnv.egg-info/PKG-INFO
+OpenFaceSimpleEnv.egg-info/SOURCES.txt
+OpenFaceSimpleEnv.egg-info/dependency_links.txt
+OpenFaceSimpleEnv.egg-info/requires.txt
+OpenFaceSimpleEnv.egg-info/top_level.txt
