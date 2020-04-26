@@ -1,10 +1,12 @@
 import time
 import warnings
-from stable_baselines import A2C
-from stable_baselines.common.policies import MlpPolicy
+from stable_baselines import A2C, PPO2
+from stable_baselines.common.policies import MlpPolicy, MlpLnLstmPolicy
 from stable_baselines.common import make_vec_env
 import gym
+import HandMakerEnv
 import OpenFaceSimpleEnv
+import HandClassificationEnv
 import re
 
 # filter warnings
@@ -14,32 +16,36 @@ warnings.filterwarnings('ignore')
 POLICY = MlpPolicy
 POLICY_NAME = 'MlpPolicy'
 
-ENVIRONMENT = "OpenFaceSimpleEnv-v1"
+ENVIRONMENT = "HandClassificationEnv-v2"
 TIMESTEPS = 300000
-NETWORK_ARCH = [356, 64, 64, 64, 64, 64]
-LEARNING_RATE = 0.0007
-LOG_INTERVAL = 100
-NUM_ENVS = 4
+NETWORK_ARCH = [160, 160]
+LEARNING_RATE = 0.001
+LOG_INTERVAL = 500
+NUM_ENVS = 8  # some algorithms can be run in parallel
 
 START_TIME = time.asctime().replace(' ', '-').replace(':', '-')
-TENSORBOARD_DIR = f'logs/tb/'
-ALGO_NAME = str(A2C)
+TENSORBOARD_DIR = f"logs/tb/"
+ALGO_NAME = str(PPO2)
 ALGO = re.findall("\'(.*?)\'", ALGO_NAME)[0].split('.')[-1]
 MODEL_DIR = f'models/{START_TIME}-{ENVIRONMENT}-{TIMESTEPS}'
-TB_LOG_NAME = f"{ALGO}-{TIMESTEPS}-{LEARNING_RATE}-{len(NETWORK_ARCH)}"  # include layer number for quick ref
+TB_LOG_NAME = f"{ALGO}-{TIMESTEPS}-{LEARNING_RATE}-{len(NETWORK_ARCH)}-{ENVIRONMENT}"  # include layer number for quick ref
+LOAD_MODEL = False
+LOAD_DIR = "models/Sat-Apr-25-21-30-12-2020-HandClassificationEnv-v2-500000.zip"
 
 
-def train(policy=POLICY, environment=ENVIRONMENT, timesteps=TIMESTEPS, log_interval=LOG_INTERVAL):
+def train(timesteps=TIMESTEPS):
     print(f"[INFO] STARTING TRAINING: {START_TIME} {ENVIRONMENT}-{POLICY_NAME}-{ALGO}")
     print(f"[INFO] NETWORK ARCH {NETWORK_ARCH}")
 
-    # configure the environment
-    # env = gym.make("OpenFaceSimpleEnv-v1")
-    env = make_vec_env("OpenFaceSimpleEnv-v1", NUM_ENVS)
-    # Custom MLP policy of two layers of size 32 each with tanh activation function
+    # use vectorized environments for the appropriate algorithms for a speed boost
+    env = make_vec_env(ENVIRONMENT, NUM_ENVS)
+    # the network architecture can be defined above for any policy
     policy_kwargs = dict(net_arch=NETWORK_ARCH)
-    model = A2C(policy, env, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log=TENSORBOARD_DIR, n_steps=10,
-                learning_rate=LEARNING_RATE)
+    model = PPO2(policy=POLICY, env=env, verbose=0, policy_kwargs=policy_kwargs, tensorboard_log=TENSORBOARD_DIR,
+                 n_steps=1,
+                 learning_rate=LEARNING_RATE)
+    if LOAD_MODEL:
+        model.load(load_path=LOAD_DIR)
     print(f"[INFO] Training for TIMESTEPS {TIMESTEPS}")
 
     model.learn(total_timesteps=timesteps, log_interval=LOG_INTERVAL, tb_log_name=TB_LOG_NAME)  # experiment select
@@ -49,5 +55,6 @@ def train(policy=POLICY, environment=ENVIRONMENT, timesteps=TIMESTEPS, log_inter
     print(f"[INFO] MODEL SAVED TO {MODEL_DIR}")
 
     return 0
+
 
 failed = train()

@@ -9,7 +9,6 @@ def convert_card_to_bitlist(card):
     # requires f strings
     return [int(b) for b in "{:032b}".format(card)]
 
-
 def convert_bitlist_to_int(bitlist):
     output = 0
     for bit in bitlist:

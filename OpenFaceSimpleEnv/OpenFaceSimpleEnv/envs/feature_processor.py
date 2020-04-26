@@ -1,6 +1,4 @@
 import numpy as np
-
-
 def observation_processor(observation):
     """Augments the observation space to encode logical XOR
 

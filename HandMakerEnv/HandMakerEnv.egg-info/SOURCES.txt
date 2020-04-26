@@ -1,0 +1,6 @@
+setup.py
+HandMakerEnv.egg-info/PKG-INFO
+HandMakerEnv.egg-info/SOURCES.txt
+HandMakerEnv.egg-info/dependency_links.txt
+HandMakerEnv.egg-info/requires.txt
+HandMakerEnv.egg-info/top_level.txt
