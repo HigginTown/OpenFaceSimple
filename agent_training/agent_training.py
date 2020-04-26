@@ -16,11 +16,11 @@ warnings.filterwarnings('ignore')
 POLICY = MlpPolicy
 POLICY_NAME = 'MlpPolicy'
 
-ENVIRONMENT = "HandClassificationEnv-v2"
-TIMESTEPS = 300000
-NETWORK_ARCH = [160, 160]
-LEARNING_RATE = 0.001
-LOG_INTERVAL = 500
+ENVIRONMENT = "HandClassificationEnv-v3"
+TIMESTEPS = 500000
+NETWORK_ARCH = [160, 160, 160, 160]
+LEARNING_RATE = 0.0005
+LOG_INTERVAL = 1000
 NUM_ENVS = 8  # some algorithms can be run in parallel
 
 START_TIME = time.asctime().replace(' ', '-').replace(':', '-')
@@ -30,7 +30,7 @@ ALGO = re.findall("\'(.*?)\'", ALGO_NAME)[0].split('.')[-1]
 MODEL_DIR = f'models/{START_TIME}-{ENVIRONMENT}-{TIMESTEPS}'
 TB_LOG_NAME = f"{ALGO}-{TIMESTEPS}-{LEARNING_RATE}-{len(NETWORK_ARCH)}-{ENVIRONMENT}"  # include layer number for quick ref
 LOAD_MODEL = False
-LOAD_DIR = "models/Sat-Apr-25-21-30-12-2020-HandClassificationEnv-v2-500000.zip"
+LOAD_DIR = "models/Sun-Apr-26-01-04-09-2020-HandClassificationEnv-v2-300000.zip"
 
 
 def train(timesteps=TIMESTEPS):

@@ -26,7 +26,7 @@ class HandClassificationEnv(gym.Env):
     def _get_reward(self, action):
         """If the choice matches the rank class, get one point. Otherwise, minus 1. 
         """
-        return 1 if action == self.rank_class - 1 else -1
+        return (9 - self.rank_class) / 9 if action == self.rank_class - 1 else -1
 
     def step(self, action):
         # set the state of the game to done
